@@ -51,7 +51,7 @@ $(function($) {
 			}
 		});
 	}
-	socket.on("mensajes",function(response) {
+	socket.on("mensajes",function(response){
 		console.log(response);
 		$("#mensajes").append("<li>"+response.nick+">"+response.msn+"</li>")
 	});

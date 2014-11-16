@@ -68,15 +68,6 @@ var nicknames=[];
 var sockets=io(server);
 sockets.on("connection",function(socket){
 	//el evento setnickname se ejecuta cuando el cliente ha emitido sobre setnickname
-	socket.on("setnickname",function(clientedata){
-		if(verificarCuenta(clientedata.nick)){
-			nicknames.push(clientedata);
-			socket.emit("setnickname",{"server":true});
-			return;
-		}
-		socket.emit("setnickname",{"server":"El nick no esta disponible"});
-		return;
-	});
 	socket.on("mensajes",function(clientedata){
 		if(clientedata.nick===socket.nickname)
 		{
@@ -84,6 +75,16 @@ sockets.on("connection",function(socket){
 			return;
 		}
 		sockets.sockets.emit("mensajes",false);
+	});
+	socket.on("setnickname",function(clientedata){
+		if(verificarCuenta(clientedata.nick)){
+			nicknames.push(clientedata);
+			socket.nickname=clientedata.nick;
+			socket.emit("setnickname",{"server":true});
+			return;
+		}
+		socket.emit("setnickname",{"server":"El nick no esta disponible"});
+		return;
 	});
 });
 
