@@ -74,12 +74,15 @@ sockets.on("connection",function(socket){
 			var comando=clientedata.msn.split(" ");
 			if (comando[0]=="join")
 			{
-				var sala=comando[1]
-				sockets.sockets.emit("mensajes",{"nick":"SERVIDOR","msn":"Estas conectado a la sala "+sala});
+				var sala=comando[1];
+				sockets.to(socket.sala).emit("mensajes",{"nick":"SERVIDOR","msn":"El usuario "+socket.nickname+" ahora esta en la sala "+sala});
+				socket.leave(socket.sala);
+				socket.sala=sala;
+				socket.join(sala);
 				return;
 			}
-
-			sockets.sockets.emit("mensajes",clientedata);
+			sockets.to(socket.sala).emit("mensajes",clientedata);
+			//sockets.sockets.emit("mensajes",clientedata);
 			return;
 		}
 		sockets.sockets.emit("mensajes",false);
@@ -87,9 +90,13 @@ sockets.on("connection",function(socket){
 	socket.on("get_lista",function(clientedata){
 		sockets.sockets.emit("get_lista",{"lista":nicknames});
 	});
+	
 	socket.on("setnickname",function(clientedata){
 		if(verificarCuenta(clientedata.nick)){
 			nicknames.push(clientedata);
+			//seteamos el nick en el mismo socket del cliente
+			socket.sala="general"
+			socket.join("general")
 			socket.nickname=clientedata.nick;
 			socket.emit("setnickname",{"server":true});
 			return;
