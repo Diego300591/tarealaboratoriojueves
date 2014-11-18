@@ -71,10 +71,21 @@ sockets.on("connection",function(socket){
 	socket.on("mensajes",function(clientedata){
 		if(clientedata.nick===socket.nickname)
 		{
+			var comando=clientedata.msn.split(" ");
+			if (comando[0]=="join")
+			{
+				var sala=comando[1]
+				sockets.sockets.emit("mensajes",{"nick":"SERVIDOR","msn":"Estas conectado a la sala "+sala});
+				return;
+			}
+
 			sockets.sockets.emit("mensajes",clientedata);
 			return;
 		}
 		sockets.sockets.emit("mensajes",false);
+	});
+	socket.on("get_lista",function(clientedata){
+		sockets.sockets.emit("get_lista",{"lista":nicknames});
 	});
 	socket.on("setnickname",function(clientedata){
 		if(verificarCuenta(clientedata.nick)){
@@ -86,6 +97,7 @@ sockets.on("connection",function(socket){
 		socket.emit("setnickname",{"server":"El nick no esta disponible"});
 		return;
 	});
+	
 });
 
 var verificarCuenta=function(ins)
@@ -101,3 +113,4 @@ var verificarCuenta=function(ins)
 }
 
 ///hola
+

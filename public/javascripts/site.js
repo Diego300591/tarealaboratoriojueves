@@ -33,13 +33,27 @@ $(function($) {
 			$("#content").html(html);
 			//habilitamos el envio de mensajes
 			enabledchat();
+			getLista();
 		})
 		.fail(function() {
 			
 		})
 		.always(function() {
 			
-		});
+		});k
+	}
+	var mostrarLista=function(listausuarios)
+	{
+		html="";
+		for(var i=0;i<listausuarios.length;i++)
+		{
+			html+="<li>"+listausuarios[i].nick+"</li>"
+		}
+		$("#usuarios").html(html);
+	}
+	var getLista=function()
+	{
+		socket.emit("get_lista",{});
 	}
 	var enabledchat=function()
 	{
@@ -51,6 +65,9 @@ $(function($) {
 			}
 		});
 	}
+	socket.on("get_lista",function(response){
+		mostrarLista(response.lista);
+	});
 	socket.on("mensajes",function(response){
 		console.log(response);
 		$("#mensajes").append("<li>"+response.nick+">"+response.msn+"</li>")
