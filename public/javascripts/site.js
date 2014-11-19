@@ -40,7 +40,7 @@ $(function($) {
 		})
 		.always(function() {
 			
-		});k
+		});
 	}
 	var mostrarLista=function(listausuarios)
 	{

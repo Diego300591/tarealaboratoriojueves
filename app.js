@@ -66,6 +66,7 @@ var server=app.listen(PORT,function(){
 
 var nicknames=[];
 var sockets=io(server);
+var salas=Array();
 sockets.on("connection",function(socket){
 	//el evento setnickname se ejecuta cuando el cliente ha emitido sobre setnickname
 	socket.on("mensajes",function(clientedata){
@@ -79,6 +80,10 @@ sockets.on("connection",function(socket){
 				socket.leave(socket.sala);
 				socket.sala=sala;
 				socket.join(sala);
+				if(!buscarsala(sala))
+				{
+					salas.push({"nombre_sala":sala,"usuarios":socket.nickname});
+				}
 				return;
 			}
 			sockets.to(socket.sala).emit("mensajes",clientedata);
@@ -117,6 +122,18 @@ var verificarCuenta=function(ins)
 		}
 	}
 	return true;
+}
+
+var buscarsala=function(sala)
+{
+	for(var i=0;i<salas.length;i++)
+	{
+		if(salas[i]==sala)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 ///hola
